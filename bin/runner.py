@@ -13,8 +13,37 @@
 
 import argparse
 import collections
+import json
+import os
 import urllib.parse
 import urllib.request
+
+def _get_endpoint(baseurl, testname, numberofruns):
+    """Construct the endpoint that is required for getting test results.
+    """
+
+    _paramDict = {
+        'testname': testname,
+        'numberofruns': numberofruns
+    }
+
+    return '%s/services/apexrest/perform?%s' % (
+        _args.baseurl, urllib.parse.urlencode(_paramDict))
+
+def _get_result_file(testname):
+    
+    # Construct the path
+    _out_dir = '.runner/out'
+    _result_file = '%s/%s.csv' % (_out_dir, testname)
+
+    # Create the file if it doesn't already exist
+    if not os.path.exists(_result_file):
+        os.makedirs(_out_dir)
+        with open(_result_file, 'w') as f:
+            f.writelines(['testname,rundatetime,duration (ms)'])
+
+    # Return the file
+    return _result_file
 
 def _parse_args():
     """Parse command line arguments from script execution.
@@ -41,29 +70,32 @@ def _parse_args():
 
     return _parser.parse_args()
 
+def _write_sample(sample, csvf):
+    """Write a sample to the CSV file.
+    """
+
+    print('TODO: _write_sample')
+
 # Let's run our script!
 if __name__ == '__main__':
     _args = _parse_args()
-
-    # Prepare to collect the results
-    _samples = []
-
-    _paramDict = {
-        'testname': _args.testname,
-        'numberofruns': _args.numberofruns
-    }
-
-    # Build the URL
-    UnparseParam = collections.namedtuple(
-        'UnparseParam',
-        ['scheme', 'netloc', 'url']
-    )
-
-    _endpoint = '%s/services/apexrest/perform?%s' % (
-        _args.baseurl, urllib.parse.urlencode(_paramDict))
+    
+    _endpoint = _get_endpoint(
+        baseurl=_args.baseurl,
+        testname=_args.testname,
+        numberofruns=_args.numberofruns)
     
     print('endpoint: %s' % _endpoint)
 
-    # Get the result
+    # Initialize the performance test result, then get the actual result
+    _result = None
+
     with urllib.request.urlopen(_endpoint) as f:
-        print(f.read().decode('utf-8'))
+        _result = json.loads(f.read().decode('utf-8'))
+
+    # Create the results file if it doesn't already exist
+    _result_file = _get_result_file(_args.testname)
+
+    with open(_result_file) as f:
+        for _sample in _result['samples']:
+            _write_sample(_sample, f)
