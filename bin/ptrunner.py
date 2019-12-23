@@ -38,4 +38,6 @@ def _parse_args():
 
     return _parser.parse_args()
 
-_args = _parse_args()
+# Let's run our script!
+if __name__ == '__main__':
+    _args = _parse_args()
