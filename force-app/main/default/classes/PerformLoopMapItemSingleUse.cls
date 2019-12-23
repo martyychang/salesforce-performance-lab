@@ -29,11 +29,20 @@ public with sharing class PerformLoopMapItemSingleUse
             LIMIT :numberOfAccounts
         ]);
 
+        System.assertEquals(
+            numberOfAccounts,
+            accountMap.size(),
+            'accountMap size'
+        );
+
         List<Contact> contactList = [
             SELECT Id, AccountId, OwnerId
             FROM Contact
             WHERE AccountId IN :accountMap.keySet()
+            LIMIT 200
         ];
+
+        System.assertEquals(200, contactList.size(), 'contactList size');
 
         // Note the start time
         Datetime startDatetime = Datetime.now();
