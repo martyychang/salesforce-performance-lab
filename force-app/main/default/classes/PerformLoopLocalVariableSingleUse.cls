@@ -5,7 +5,7 @@ public with sharing class PerformLoopLocalVariableSingleUse
     
     public static final String NUMBER_OF_ACCOUNTS_PARAM = 'numberofaccounts';
     
-    public PtController.PtSample execute(Map<String, String> context) {
+    public PerformController.PerformSample execute(Map<String, String> context) {
 
         // Get the number of accounts for the test
         Integer numberOfAccounts = context.containsKey(NUMBER_OF_ACCOUNTS_PARAM)
@@ -43,7 +43,7 @@ public with sharing class PerformLoopLocalVariableSingleUse
         // Note the stop time
         Datetime stopDatetime = Datetime.now();
 
-        return new PtController.PtSample(
+        return new PerformController.PerformSample(
             stopDatetime.getTime() - startDatetime.getTime(),
             Datetime.now()
         );

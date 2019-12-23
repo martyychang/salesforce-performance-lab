@@ -1,5 +1,5 @@
 @RestResource(urlMapping='/perform')
-global class PtController {
+global class PerformController {
 
     global static final Integer DEFAULT_NUMBER_OF_RUNS = 10;
 
@@ -8,7 +8,7 @@ global class PtController {
     global static final String TEST_NAME_PARAM = 'testname';
 
     @HttpGet
-    global static PtResult perform() {
+    global static PerformResult perform() {
 
         // Get a handle on the request
         RestRequest req = RestContext.request;
@@ -19,7 +19,7 @@ global class PtController {
                 : DEFAULT_NUMBER_OF_RUNS;
 
         // Initialize the result
-        PtResult result = new PtResult(
+        PerformResult result = new PerformResult(
             req.params.get(TEST_NAME_PARAM),
             numberOfRuns
         );
@@ -39,23 +39,23 @@ global class PtController {
         return result;
     }
 
-    global class PtResult {
+    global class PerformResult {
         global String name;
         global Integer numberOfRuns;
-        global List<PtSample> samples;
+        global List<PerformSample> samples;
 
-        public PtResult(String name, Integer numberOfRuns) {
+        public PerformResult(String name, Integer numberOfRuns) {
             this.name = name;
             this.numberOfRuns = numberOfRuns;
-            this.samples = new List<PtSample>();
+            this.samples = new List<PerformSample>();
         }
     }
 
-    global class PtSample {
+    global class PerformSample {
         global Long measuredDuration;
         global Long runDate;
 
-        global PtSample(Long measuredDuration, Datetime runDatetime) {
+        global PerformSample(Long measuredDuration, Datetime runDatetime) {
             this.measuredDuration = measuredDuration;
             this.runDate = runDatetime.getTime();
         }
