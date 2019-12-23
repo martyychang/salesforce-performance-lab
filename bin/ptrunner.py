@@ -2,7 +2,7 @@
 # by executing a test with various parameters.
 #
 #   ptrunner.py \
-#       -t PtLoopLocalVariableSingleUse \
+#       -t PerformLoopLocalVariableSingleUse \
 #       -n 1000 \
 #       -p number_of_accounts=100 \
 #       -r https://example.my.salesforce.com/
