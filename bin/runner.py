@@ -18,6 +18,20 @@ import os
 import urllib.parse
 import urllib.request
 
+_EXCEL_DATE_OFFSET = 25569
+"""The number to add to get correct date value for Excel.
+
+A date value of 1 in Excel represents 1/1/1900 0:00:00 GMT.
+The `long` value returned by `getTime` in Java represents the
+number of milliseconds elapsed since 1/1/1970 0:00:00 GMT.
+This number should be added to `getTime` value in Java converted
+to days in order to arrive at the correct date value for 
+recognition by Excel.
+
+See Excel details: https://stackoverflow.com/a/981865
+See Java details: https://www.geeksforgeeks.org/date-gettime-method-in-java-with-examples/
+"""
+
 def _get_endpoint(baseurl, testname, numberofruns):
     """Construct the endpoint that is required for getting test results.
     """
@@ -34,13 +48,16 @@ def _get_result_file(testname):
     
     # Construct the path
     _out_dir = '.runner/out'
+    
+    if not os.path.exists(_out_dir):
+        os.makedirs(_out_dir)
+    
+    # Create the file if it doesn't already exist
     _result_file = '%s/%s.csv' % (_out_dir, testname)
 
-    # Create the file if it doesn't already exist
     if not os.path.exists(_result_file):
-        os.makedirs(_out_dir)
         with open(_result_file, 'w') as f:
-            f.writelines(['testname,rundatetime,duration (ms)'])
+            f.write('testname,rundatetime,duration (ms)\n')
 
     # Return the file
     return _result_file
@@ -70,11 +87,14 @@ def _parse_args():
 
     return _parser.parse_args()
 
-def _write_sample(sample, csvf):
+def _write_sample(testname, sample, csvf):
     """Write a sample to the CSV file.
     """
 
-    print('TODO: _write_sample')
+    csvf.write('%s,%s,%s\n' % (
+        testname,
+        sample['runDate'] / 1000 / 60 / 60 / 24 + _EXCEL_DATE_OFFSET,
+        sample['measuredDuration']))
 
 # Let's run our script!
 if __name__ == '__main__':
@@ -96,6 +116,6 @@ if __name__ == '__main__':
     # Create the results file if it doesn't already exist
     _result_file = _get_result_file(_args.testname)
 
-    with open(_result_file) as f:
+    with open(_result_file, 'a') as f:
         for _sample in _result['samples']:
-            _write_sample(_sample, f)
+            _write_sample(_args.testname, _sample, f)
