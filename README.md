@@ -71,6 +71,32 @@ for (Contact eachContact : contactList) {
 insert contactList;
 ```
 
-## Part 2: Use ptrunner.py to collect test results.
+## Part 2: Use runner.py to collect test results.
 
-TODO
+Once the API is set up, you can use **bin/runner.py** to collect results
+that will be stored in the **.runner/out** directory
+within your local project.
+
+```bash
+# This will collect 10 samples and store them inside a local file:
+# .runner/out/PerformLoopLocalVariableSingleUse.csv
+python3 bin/runner.py \
+    -t PerformLoopLocalVariableSingleUse \
+    -n 10 \
+    -r http://sandbox-drive-velocity-1634-developer-edition.cs1.force.com
+```
+
+There are system limits in Salesforce that make retrieving a large number
+of results rather difficult. To work around this, without having to write
+crazy code to handle the logic in Salesforce, simply use a loop within
+the command line.
+
+```bash
+# This command in Bash will effectively run until 1,000 samples are collected.
+#
+# See details: https://serverfault.com/a/737269
+seq 100 | xargs -I -- python3 bin/runner.py \
+    -t PerformLoopMapItemSingleUse \
+    -n 10 \
+    -r http://sandbox-drive-velocity-1634-developer-edition.cs1.force.com
+```

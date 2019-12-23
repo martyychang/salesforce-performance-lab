@@ -30,3 +30,6 @@ $RECYCLE.BIN/
 
 # Visual Studio Code
 .vscode
+
+# Performanc test runner files
+.runner/
