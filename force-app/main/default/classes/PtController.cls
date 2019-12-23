@@ -26,8 +26,14 @@ global class PtController {
 
         // Run the test
         for (Integer i = 0; i < numberOfRuns; i++) {
-            // Type testType = Type.forName(req.params[TEST_NAME_PARAM]);
-            // result.add(((Performable)testType.newInstance()).execute());
+
+            // Determine the Apex class to instantiate
+            Type testType = Type.forName(req.params.get(TEST_NAME_PARAM));
+
+            // Add the sample from a new run to the list in the result
+            result.samples.add(
+                ((Performable)testType.newInstance()).execute(req.params)
+            );
         }
 
         return result;
@@ -46,10 +52,10 @@ global class PtController {
     }
 
     global class PtSample {
-        global Integer measuredDuration;
+        global Long measuredDuration;
         global Long runDate;
 
-        global PtSample(Integer measuredDuration, Datetime runDatetime) {
+        global PtSample(Long measuredDuration, Datetime runDatetime) {
             this.measuredDuration = measuredDuration;
             this.runDate = runDatetime.getTime();
         }
