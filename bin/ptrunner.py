@@ -12,6 +12,9 @@
 # endpoint for the HTTP GET request is specified by the `-r` argument.
 
 import argparse
+import collections
+import urllib.parse
+import urllib.request
 
 def _parse_args():
     """Parse command line arguments from script execution.
@@ -41,3 +44,26 @@ def _parse_args():
 # Let's run our script!
 if __name__ == '__main__':
     _args = _parse_args()
+
+    # Prepare to collect the results
+    _samples = []
+
+    _paramDict = {
+        'testname': _args.testname,
+        'numberofruns': _args.numberofruns
+    }
+
+    # Build the URL
+    UnparseParam = collections.namedtuple(
+        'UnparseParam',
+        ['scheme', 'netloc', 'url']
+    )
+
+    _endpoint = '%s/services/apexrest/perform?%s' % (
+        _args.baseurl, urllib.parse.urlencode(_paramDict))
+    
+    print('endpoint: %s' % _endpoint)
+
+    # Get the result
+    with urllib.request.urlopen(_endpoint) as f:
+        print(f.read().decode('utf-8'))
