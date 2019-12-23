@@ -21,7 +21,7 @@ Next are a few required manual steps.
 2. Set the Active Site Home Page to "UnderConstruction".
 3. Activate the site.
 4. Edit Public Access Settings for the site, and grant the site access
-   to the `PtController` Apex class.
+   to the `PerformController` Apex class.
 
 And you'll probably want some test data. Below is some anonymous Apex
 you can run to create 200 accounts and 1,286 contacts.
